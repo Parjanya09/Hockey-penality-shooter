@@ -1,7 +1,3 @@
-//
-// Created by kunal on 3/3/18.
-//
-
 #ifndef FOOTBALL_PENALTY_SHOOTER_FUNCTIONALITIES_H
 #define FOOTBALL_PENALTY_SHOOTER_FUNCTIONALITIES_H
 
@@ -42,6 +38,7 @@ struct PhysicalState {
     PhysicalState();
     friend ostream &operator << (ostream &out, PhysicalState &p);
 };
+
 
 bool isItGoal(PhysicalState ball);
 

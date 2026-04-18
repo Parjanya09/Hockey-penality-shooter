@@ -1,7 +1,3 @@
-//
-// Created by kunal on 4/3/18.
-//
-
 #include <GL/glut.h>
 #include "shapes.h"
 #include <bits/stdc++.h>
@@ -13,22 +9,28 @@ void FlatSurface::draw() {
     start2DTexture(groundTexture);
 
     glBegin(GL_QUADS);
-    glTexCoord2f(0.0, 0.0);
-    glVertex3f(corners[0].x, corners[0].y, corners[0].z);
-    glTexCoord2f(0.0, GRASS_TEXT_MULTIPLY);
-    glVertex3f(corners[1].x, corners[1].y, corners[1].z);
-    glTexCoord2f(GRASS_TEXT_MULTIPLY, GRASS_TEXT_MULTIPLY);
-    glVertex3f(corners[2].x, corners[2].y, corners[2].z);
-    glTexCoord2f(GRASS_TEXT_MULTIPLY, 0.0);
-    glVertex3f(corners[3].x, corners[3].y, corners[3].z);
+     glTexCoord2f(0.0, 0.0);
+glVertex3f(corners[0].x, corners[0].y, corners[0].z);
+
+glTexCoord2f(0.0, 1.0);
+glVertex3f(corners[1].x, corners[1].y, corners[1].z);
+
+glTexCoord2f(1.0, 1.0);
+glVertex3f(corners[2].x, corners[2].y, corners[2].z);
+
+glTexCoord2f(1.0, 0.0);
+glVertex3f(corners[3].x, corners[3].y, corners[3].z); 
+
     glEnd();
 
     end2DTexture();
 
-    start2DTexture(ads);
+  
+     //start2DTexture(ads);
     for (int i = 0; i < 4; ++i) {
 
         glBegin(GL_QUADS);
+        glColor4f(0,0,0.5,0.12);
         glTexCoord2f(0.0, 1);
         glVertex3f(corners[i].x, corners[i].y, corners[i].z);
         glTexCoord2f(1*10, 1);
@@ -39,8 +41,6 @@ void FlatSurface::draw() {
         glVertex3f(corners[i].x, corners[i].y, corners[(i + 1) % 4].z + AD_HEIGHT);
         glEnd();
     }
-
-
     end2DTexture();
 
 }
@@ -53,11 +53,7 @@ void PoleSurface::draw() {
 
 
     if (Type == U_POLE) {
-//        glColor3f(0.0, 0.0, 0.0);
-//        glBegin(GL_LINES);
-//        glVertex3d(height, 0, 0);
-//        glVertex3d(-height, 0, 0);
-//        glEnd();
+
         glTranslated(radius, 0.0, radius);
         glRotatef(180, 1, 0, 0);
         {
@@ -111,10 +107,7 @@ void PoleSurface::draw() {
         glRotatef(90, 0, 1, 0);
         glTranslated(0, 0, 2 * radius);
         glRotatef(180, 1, 0, 0);
-//        glColor3f(0.0, 0.0, 0.0);
-//        glBegin(GL_LINES);
-//        glVertex3d(0, 0, 0);
-//        glVertex3d(-height, 0, 0);
+
         glEnd();
         {
 
@@ -258,15 +251,12 @@ void Defender::acceleration() {
 }
 
 void Defender::draw() {
-    start2DTexture(defenderTexture);
-//    glPushMatrix();
-//    glPushAttrib(GL_CURRENT_BIT);
-//
-//
-//    glColor4fv(color);
 
-    glTranslatef(defender.state.positionCurrent.x, GOAL_POST_Y, (this->height) / 2 - BALL_RADIUS);
-//    glRotatef(armRot, 0,1,0);
+    glPushMatrix();
+
+    start2DTexture(defenderTexture);
+
+    glTranslatef(defender.state.positionCurrent.x, GOAL_POST_Y - 0.3, (this->height) / 2 - BALL_RADIUS);
 
     glBegin(GL_QUADS);
     glTexCoord2f(0.0, 1);
@@ -279,57 +269,93 @@ void Defender::draw() {
     glVertex3f(-this->width / 2, 0, this->height / 2);
     glEnd();
 
-//    glScalef((this->width)/DEFENDER_THICKNESS, 1.0, (this->height)/DEFENDER_THICKNESS);
-//
-//    glutSolidCube(DEFENDER_THICKNESS);
-
-    glEnd();
-
     end2DTexture();
 
-    start2DTexture(leftArm);
+    glPopMatrix();
 
-    float displacex = -0.3;
-    float displacey = 0.63;
-    glTranslatef(defender.state.positionCurrent.x, GOAL_POST_Y, (this->height) / 2 - BALL_RADIUS);
-    glTranslatef(this->width*displacex/2, 0, this->width*displacey/2);
-    glRotatef(armRot, 0,1,0);
-    glTranslatef(-this->width*displacex/2, 0, -this->width*displacey/2);
-    glBegin(GL_QUADS);
-    glTexCoord2f(0.0, 1);
-    glVertex3f(-this->width / 2, 0, -this->height*0.22 / 2);
-    glTexCoord2f(1, 1);
-    glVertex3f(0-this->width*0.15 / 2, 0, -this->height*0.2 / 2);
-    glTexCoord2f(1, 0.0);
-    glVertex3f(0-this->width*0.15/ 2, 0, this->height*0.60 / 2);
-    glTexCoord2f(0.0, 0.0);
-    glVertex3f(-this->width / 2, 0, this->height*0.60 / 2);
-    glEnd();
 
-    end2DTexture();
 
-    start2DTexture(leftArm);
+    // LEFT ARM
+    glDisable(GL_DEPTH_TEST);
+    glPushMatrix();
 
-    glTranslatef(defender.state.positionCurrent.x, GOAL_POST_Y, (this->height) / 2 - BALL_RADIUS);
-    glScalef(-1,1,1);
-    glTranslatef(this->width*displacex/2, 0, this->width*displacey/2);
-    glRotatef(armRot, 0,1,0);
-    glTranslatef(-this->width*displacex/2, 0, -this->width*displacey/2);
-    glBegin(GL_QUADS);
-    glTexCoord2f(0.0, 1);
-    glVertex3f(-this->width / 2, 0, -this->height*0.22 / 2);
-    glTexCoord2f(1, 1);
-    glVertex3f(0-this->width*0.15 / 2, 0, -this->height*0.2 / 2);
-    glTexCoord2f(1, 0.0);
-    glVertex3f(0-this->width*0.15/ 2, 0, this->height*0.60 / 2);
-    glTexCoord2f(0.0, 0.0);
-    glVertex3f(-this->width / 2, 0, this->height*0.60 / 2);
-    glEnd();
+start2DTexture(leftArm);
 
-    end2DTexture();
+// Move to body position
+glTranslatef(defender.state.positionCurrent.x,
+             GOAL_POST_Y - 0.3,
+             (this->height) / 2 - BALL_RADIUS + 0.08);
 
-//    glPopAttrib();
-//    glPopMatrix();
+glTranslatef(
+    -this->width * 0.10,
+    0,
+    this->height / 2 - this->height * 0.23
+);
+
+// Rotate around shoulder
+glRotatef(armRot, 0, 1, 0);
+
+
+glBegin(GL_QUADS);
+
+// bottom-left
+glTexCoord2f(0, 1); glVertex3f(-this->width * 0.45, 0, -this->height * 0.55);
+
+// bottom-right
+glTexCoord2f(1, 1); glVertex3f(0, 0, -this->height * 0.55);
+
+glTexCoord2f(1, 0); glVertex3f(0, 0, 0);
+
+// top-left
+glTexCoord2f(0, 0); glVertex3f(-this->width * 0.45, 0, 0);
+
+glEnd();
+end2DTexture();
+
+glPopMatrix();
+
+
+
+    // RIGHT ARM
+    glPushMatrix();
+
+start2DTexture(rightArm);
+
+glTranslatef(defender.state.positionCurrent.x,
+             GOAL_POST_Y - 0.3,
+             (this->height) / 2 - BALL_RADIUS + 0.08);
+
+
+glTranslatef(
+    this->width * 0.14,
+    0,
+    this->height / 2 - this->height * 0.23
+);
+
+// Rotate opposite direction
+glRotatef(-armRot, 0, 1, 0);
+
+// Draw mirrored quad
+glBegin(GL_QUADS);
+
+// bottom-left
+glTexCoord2f(0, 1); glVertex3f(0, 0, -this->height * 0.50);
+
+// bottom-right
+glTexCoord2f(1, 1); glVertex3f(this->width * 0.40, 0, -this->height * 0.50);
+
+// top-right
+glTexCoord2f(1, 0); glVertex3f(this->width * 0.40, 0, 0);
+
+// ✅ top-left (pivot)
+glTexCoord2f(0, 0); glVertex3f(0, 0, 0);
+
+glEnd();
+
+end2DTexture();
+
+glPopMatrix();
+glEnable(GL_DEPTH_TEST);
 }
 
 FlatArrow aimArrow;

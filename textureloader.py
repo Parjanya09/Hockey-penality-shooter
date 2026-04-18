@@ -3,7 +3,7 @@ import sys
 from PIL import Image
 
 if len(sys.argv) != 2:
-	print "Add image as argument."
+	print ("Add image as argument.")
 	sys.exit(1)
 
 def mapper(pxl):
@@ -14,7 +14,7 @@ def mapper(pxl):
 		dat +=i
 	return str(dat)
 
-texture = Image.open(sys.argv[1])
+texture = Image.open(sys.argv[1]).convert("RGBA")
 
 data = list(texture.getdata())
 

@@ -1,6 +1,3 @@
-//
-// Created by kunal on 3/3/18.
-//
 #include <GL/glut.h>
 #include <bits/stdc++.h>
 #include "constants.h"
@@ -14,6 +11,7 @@ bool poleCollided[3];
 bool stopEverything = false;
 unsigned int Tries, Goals;
 vector<float> currentTextColor = {1, 1, 1, 1};
+
 
 void showScore();
 
@@ -98,28 +96,26 @@ void updatePos(PhysicalState &p, double t) {
         }
     }
 
-    {   // Gravity and ground bouncing effects
-        for (int i = 0; i < 3; ++i) {
-            p.positionCurrent[i] =
-                    p.velocityCurrent[i] * t + 0.5 * p.accelerationCurrent[i] * t * t + p.positionCurrent[i];
-            p.velocityCurrent[i] = p.velocityCurrent[i] + p.accelerationCurrent[i] * t;
-        }
-        if (p.positionCurrent[2] <= 0) {
-            p.positionCurrent[2] = 0;
-            p.velocityCurrent[2] = -p.velocityCurrent[2];
-            for (int i = 0; i < 3; ++i) {
-                p.velocityCurrent[i] = p.elasticity * p.velocityCurrent[i];
-            }
-        }
-        for (int i = 0; i < 3; ++i) {
-            if (fabs(p.velocityCurrent[i]) <= THRESHOLD_ZERO) {
-                p.velocityCurrent[i] = 0;
-            }
-        }
-        if (fabs(p.positionCurrent[2]) <= THRESHOLD_ZERO) {
-            p.positionCurrent[2] = 0;
-        }
-    }
+    {   // Hockey puck physics (no gravity, sliding)
+
+   // Update position only in X and Y
+    p.positionCurrent.x += p.velocityCurrent.x * t;
+    p.positionCurrent.y += p.velocityCurrent.y * t;
+
+// Lock Z to ground
+    p.positionCurrent.z = 0;
+    p.velocityCurrent.z = 0;
+
+// Apply friction
+float friction = 0.99;
+p.velocityCurrent.x *= friction;
+p.velocityCurrent.y *= friction;
+
+// Stop when very slow
+if (fabs(p.velocityCurrent.x) <= 0.01) p.velocityCurrent.x = 0;
+if (fabs(p.velocityCurrent.y) <= 0.01) p.velocityCurrent.y = 0;
+
+}
     if (p.positionCurrent.y + BALL_RADIUS > 20.0 || p.positionCurrent.y - BALL_RADIUS < -20.0) {
         p.velocityCurrent.y = -p.velocityCurrent.y;
     }
@@ -180,30 +176,30 @@ void draw() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glMatrixMode(GL_MODELVIEW); //Switch to the drawing perspective
 
+glPushMatrix();
+glColor3f(0.3, 0.3, 0.3);
 
-//    glColor3f(1, 0, 0);
-//    glBegin(GL_LINES);
-//    glVertex3f(0, 0, 0);
-//    glVertex3f(5, 0, 0);
-//    glColor3f(0, 1, 0);
-//    glVertex3f(0, 0, 0);
-//    glVertex3f(0, 5, 0);
-//    glColor3f(0, 0, 1);
-//    glVertex3f(0, 0, 0);
-//    glVertex3f(0, 0, 5);
-//    glEnd();
+float puckHeight = BALL_RADIUS * 0.4;
 
+glTranslatef(
+    sphere.positionCurrent.x,
+    sphere.positionCurrent.y,
+    sphere.positionCurrent.z - BALL_RADIUS
+);
 
+GLUquadric* quad = gluNewQuadric();
 
-    glPushMatrix();
-    glColor3f(1.0, 1.0, 0.0);
-    glTranslatef(sphere.positionCurrent.x, sphere.positionCurrent.y, sphere.positionCurrent.z);
-    glutSolidSphere(BALL_RADIUS, 20, 20);
-    glPopMatrix();
+gluCylinder(quad, BALL_RADIUS, BALL_RADIUS, puckHeight, 30, 10);
 
-//    glTranslatef(0,0,0);
-//        glScalef(2.0,2.0,1.0);
+// bottom
+gluDisk(quad, 0, BALL_RADIUS, 30, 1);
 
+// top
+glTranslatef(0, 0, puckHeight);
+gluDisk(quad, 0, BALL_RADIUS, 30, 1);
+
+gluDeleteQuadric(quad);
+glPopMatrix();
     glPushMatrix();
     glPushAttrib(GL_CURRENT_BIT);
     glColor4f(1.0, 1.0, 1.0, 0.7);
@@ -217,10 +213,6 @@ void draw() {
     }
     drawChalkLines();
 
-//    renderBitmapString(0, 0, 0.5, GLUT_BITMAP_HELVETICA_18, "HELLO");
-
-    //Draw all transparent textured objects here:
-
 
     ground.draw();
     defender.draw();
@@ -228,7 +220,6 @@ void draw() {
 
     showMsg();
 
-//    loadTextureFile("");
     drawHUD();
 
 
@@ -256,7 +247,6 @@ void showScore() {
 
     glPushMatrix();
     glTranslatef(-POLE_LENGTH / 2.0 - BALL_RADIUS / 2.0, 0.0001, 1);
-//    glColor4f(133/255.0, 193/255.0, 162/255.0,0.8);
     glColor4f(178 / 255.0, 255 / 255.0, 215 / 255.0, 0.5);
     glScalef(POLE_LENGTH + BALL_RADIUS, 1, 1);
     glBegin(GL_QUADS);
@@ -383,7 +373,7 @@ void idle() {
                 if (!determineSphere && !stopEverything) {
                     determineSphere = new PhysicalState;
                     *determineSphere = sphere;
-//                    cout << *determineSphere;
+
                     scoredGoal = isItGoal(*determineSphere);
                     if (scoredGoal) {
                         Goals++;
@@ -409,45 +399,9 @@ void handleUpKeypress(unsigned char key, int x, int y) {
 }
 
 void handleSpecialKeypress(int key, int x, int y) {
-//    if (currentMode == ADJUSTING || currentMode == REPLAY) {
-//        switch (key) {
-//            case GLUT_KEY_UP:
-//                sphereCamera.zAngle += 1.0f;
-//                break;
-//            case GLUT_KEY_DOWN:
-//                sphereCamera.zAngle -= 1.0f;
-//                break;
-//            case GLUT_KEY_LEFT:
-//                sphereCamera.xAngle -= 1.0f;
-//                break;
-//            case GLUT_KEY_RIGHT:
-//                sphereCamera.xAngle += 1.0f;
-//                break;
-//        }
-//    }
+
     if (currentMode == AIMING) {
-//    glTranslatef(36.0, 0, 0);
-//    glScalef(-1.0, 1.0, 1.0);
-//    glColor4f(0.1, 0.1, 0.1, 1.0);
-//    glBegin(GL_QUADS);
-//    glVertex2f(-10.0, -0.2);
-//    glVertex2f(5.0, -0.2);
-//    glVertex2f(5.0, 0.2);
-//    glVertex2f(-10.0, 0.2);
-//    glEnd();
-//    glBegin(GL_TRIANGLES);
-//
-//    glVertex2f(5.0, -0.4);
-//    glVertex2f(8.0, 0.0);
-//    glVertex2f(5.0, 0.4);
-//    glEnd();
-//
-//    glColor3f(0.3, 0.3, 1.0);
-//    glTranslatef(18, 0, 0);
-//    glBegin(GL_LINES);
-//    glVertex2f(-10, 0);
-//    glVertex2f(10.0, 0);
-//    glEnd();
+
         const float increment=2.0f;
         switch (key) {
             case GLUT_KEY_UP:
@@ -503,7 +457,6 @@ void myInit(void) {
 }
 
 int main(int argc, char *argv[]) {
-//    convertToTexture("resources/texture.txt", "resources/texture.texture");
     initialiseEverything();
     currentMode = HELP;
 
@@ -518,11 +471,10 @@ int main(int argc, char *argv[]) {
     glutKeyboardUpFunc(handleUpKeypress);
     glutSpecialFunc(handleSpecialKeypress);
     glutPassiveMotionFunc(handlePassiveMouse);
-//    groundTexture = LoadBMP("resources/grass.bmp");
-    groundTexture = convertAndLoadTexture("resources/grass.txt");
+    groundTexture = convertAndLoadTexture("resources/ice1.txt");
     defenderTexture = convertAndLoadTexture("resources/defender.txt");
     font = convertAndLoadTexture("resources/fonts/Ubuntu Mono Nerd Font Complete Mono.txt");
-    ads = convertAndLoadTexture("resources/ads.txt");
+   // ads = convertAndLoadTexture("resources/ads.txt");
     leftArm = convertAndLoadTexture("resources/left_arm.txt");
     rightArm = convertAndLoadTexture("resources/right_arm.txt");
     glutMouseFunc(NULL);

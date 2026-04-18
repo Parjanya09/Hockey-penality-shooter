@@ -1,7 +1,3 @@
-//
-// Created by kunal on 4/3/18.
-//
-
 #include "functionalities.h"
 #include "shapes.h"
 #include <bits/stdc++.h>
@@ -27,10 +23,6 @@ void handleResize(int w, int h) {
     glLoadIdentity(); //Reset the camera
     glFrustum(-1.0 * w / h, 1.0 * w / h, -1, 1, 2, 100);
     glMatrixMode(GL_MODELVIEW);
-//    gluPerspective(45,                  //The camera angle
-//                   (double) w / (double) h, //The width-to-height ratio
-//                   1.0,                   //The near z clipping coordinate
-//                   200.0);                //The far z clipping coordinate
 }
 
 double &axes::operator[](int index) {
@@ -78,7 +70,7 @@ ostream &operator<<(ostream &out, PhysicalState &p) {
     out << endl;
     out << "Time Passed : ";
     out << p.timePassed << endl;
-
+ return out;
 }
 
 
@@ -186,7 +178,7 @@ void initialiseEverything() {
 
     sphere.positionInitial.x = sphere.positionCurrent.x = 0.0;
     sphere.velocityCurrent[0] = sphere.velocityInitial[0] = 0;
-    sphere.accelerationCurrent[2] = -9.8;
+    sphere.accelerationCurrent[2] = 0;
     toLookAt = sphere.positionCurrent;
 
     sphere.elasticity = BALL_ELASTICITY;
@@ -299,30 +291,6 @@ void drawPowerMeter() {
 
 
     glEnd();
-//
-//    glTranslatef(36.0, 0, 0);
-//    glScalef(-1.0, 1.0, 1.0);
-//    glColor4f(0.1, 0.1, 0.1, 1.0);
-//    glBegin(GL_QUADS);
-//    glVertex2f(-10.0, -0.2);
-//    glVertex2f(5.0, -0.2);
-//    glVertex2f(5.0, 0.2);
-//    glVertex2f(-10.0, 0.2);
-//    glEnd();
-//    glBegin(GL_TRIANGLES);
-//
-//    glVertex2f(5.0, -0.4);
-//    glVertex2f(8.0, 0.0);
-//    glVertex2f(5.0, 0.4);
-//    glEnd();
-//
-//    glColor3f(0.3, 0.3, 1.0);
-//    glTranslatef(18, 0, 0);
-//    glBegin(GL_LINES);
-//    glVertex2f(-10, 0);
-//    glVertex2f(10.0, 0);
-//    glEnd();
-
 
     glPopAttrib();
     glPopMatrix();
@@ -487,6 +455,7 @@ int convertToTexture(const char *filename) {
     dest.write((char *) &w, sizeof(w));
     dest.write((char *) &h, sizeof(h));
     dest.close();
+    return 0;
 }
 
 GLuint loadTextureFile(const char *filename) {
@@ -573,7 +542,7 @@ GLuint convertAndLoadTexture(const char *filename) {
     return loadTextureFile(dest.c_str());
 }
 
-GLuint groundTexture, defenderTexture, leftArm, rightArm, font, ads;
+  GLuint groundTexture, defenderTexture, leftArm, rightArm, font; // add ads here later 7th
 
 void start2DTexture(GLuint texture, bool lightingDisabled) {
 
@@ -584,6 +553,8 @@ void start2DTexture(GLuint texture, bool lightingDisabled) {
     glPushMatrix();
     glEnable(GL_TEXTURE_2D);
     glBindTexture(GL_TEXTURE_2D, texture);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
     glTexEnvf(GL_TEXTURE_2D, GL_TEXTURE_ENV_MODE, GL_MODULATE);
     glEnable(GL_BLEND);
 //    glEnable(GL_TEXTURE_GEN_S); //enable texture coordinate generation
@@ -615,6 +586,7 @@ float writeMultiLineText(string text, int texture, alignment align) {
         writeText(SingleLine, texture, align);
         glTranslated(0, 0, -1);
     }
+    return 0.0f;
 }
 
 float writeText(string text, int texture, alignment align) {
