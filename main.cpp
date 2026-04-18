@@ -203,7 +203,7 @@ glPopMatrix();
     glPushMatrix();
     glPushAttrib(GL_CURRENT_BIT);
     glColor4f(1.0, 1.0, 1.0, 0.7);
-    drawGoalPost();
+    
 
     glPopAttrib();
     glPopMatrix();
@@ -213,15 +213,23 @@ glPopMatrix();
     }
     drawChalkLines();
 
-
+    drawAudience();
     ground.draw();
+    drawBillboard3D("", 0, 20.0, 4.5);
+    drawGoalPost();
     defender.draw();
-    showScore();
 
     showMsg();
+        std::string msg = "";
+
+if (determineSphere) {
+    if (isItGoal(*determineSphere))
+        msg = "GOAL!";
+    else
+        msg = "MISS!";
+}
 
     drawHUD();
-
 
     glutSwapBuffers();
     glutPostRedisplay();
@@ -473,8 +481,10 @@ int main(int argc, char *argv[]) {
     glutPassiveMotionFunc(handlePassiveMouse);
     groundTexture = convertAndLoadTexture("resources/ice1.txt");
     defenderTexture = convertAndLoadTexture("resources/defender.txt");
+    crowdTexture = convertAndLoadTexture("resources/side.txt");
+    sideTexture  = convertAndLoadTexture("resources/side.txt"); 
     font = convertAndLoadTexture("resources/fonts/Ubuntu Mono Nerd Font Complete Mono.txt");
-   // ads = convertAndLoadTexture("resources/ads.txt");
+    ads = convertAndLoadTexture("resources/ads.txt");
     leftArm = convertAndLoadTexture("resources/left_arm.txt");
     rightArm = convertAndLoadTexture("resources/right_arm.txt");
     glutMouseFunc(NULL);

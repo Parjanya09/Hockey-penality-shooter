@@ -1,0 +1,38 @@
+* [33mf125773[m[33m ([m[1;36mHEAD -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m)[m Delete LICENSE
+*   [33m2ba6607[m Merge branch 'main' of https://github.com/Parjanya09/Hockey-penality-shooter
+[32m|[m[33m\[m  
+[32m|[m * [33m7d37c6c[m Delete game
+[32m|[m * [33m46c963e[m Delete resources
+[32m|[m * [33m7eb611c[m Delete textureloader.py
+[32m|[m * [33m1ff50ed[m Delete shapes.h
+[32m|[m * [33m605cc9a[m Delete main.cpp
+[32m|[m * [33m417c260[m Delete test.ttf
+[32m|[m * [33m1a12a68[m Delete shapes.cpp
+[32m|[m * [33m33416aa[m Delete functionalities.cpp
+[32m|[m * [33me1b48e2[m Delete functionalities.h
+[32m|[m * [33mde0891c[m Delete LICENSE
+[32m|[m * [33m6846a9c[m Delete constants.h
+[32m|[m * [33m7041393[m Delete README.md
+[32m|[m * [33m93440c7[m Delete .gitignore
+[32m|[m * [33m8641fba[m Delete CMakeLists.txt
+[32m|[m * [33mf29c822[m Delete fontloader.py
+[32m|[m * [33mab58e82[m Create resources
+[32m|[m * [33m2bc4535[m Add files via upload
+[32m|[m * [33m3d45b89[m Initial commit
+* [33m4e6acf1[m Initial commit
+* [33mb3a6305[m Update README.md
+* [33m7822531[m Updated Project Report.
+* [33m6411b10[m Final Working Poject with Documentation.
+* [33m7d541e1[m Final Mods.
+* [33mb12f097[m Project Credits Left..
+* [33m6f0affd[m PRoject nearly completed with just code cleaning left out.
+* [33m846f015[m Refactored Angle Names.
+* [33mc145eeb[m Added Mouse Functionality.
+* [33m68f6ade[m Initial Working Project.
+* [33mf1fa53f[m Added Simple Sound and defender with physics.
+* [33mfc57fa4[m Added Proper Lighting.
+* [33m66f03fd[m Added Simple goal scoring system (no point record currently).
+* [33mb9ac65b[m Added Initial Game Look.
+* [33me000775[m Initial idea of field.
+* [33m1fa4b2b[m Example code to be used in project.
+* [33m3a8dc30[m Initial commit

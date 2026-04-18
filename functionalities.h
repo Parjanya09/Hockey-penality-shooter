@@ -14,7 +14,10 @@ using namespace std;
 extern unsigned int Tries, Goals;
 
 void handleResize(int w, int h);
-
+void drawBillboard3D(std::string text, float x, float y, float z);
+void drawAudience();
+extern GLuint crowdTexture;
+extern GLuint sideTexture;
 
 struct axes {
     double x, y, z;

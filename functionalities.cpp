@@ -91,27 +91,6 @@ void backgroundMusicPlayer(int _) {
     glutTimerFunc(5 * 1000, backgroundMusicPlayer, 0);
 }
 
-//int LoadGLTexture(char *filename) {
-//    GLuint texture = SOIL_load_OGL_texture
-//            (
-//                    filename,
-//                    SOIL_LOAD_AUTO,
-//                    SOIL_CREATE_NEW_ID,
-//                    SOIL_FLAG_INVERT_Y
-//            );
-//
-//
-//    if (texture == 0)
-//        return false;
-//
-//
-//    glBindTexture(GL_TEXTURE_2D, texture);
-//    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-//    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-//
-//    return texture;
-//}
-
 
 void initialiseEverything() {
     ground.Type = WALL;
@@ -217,7 +196,123 @@ void drawGoalPost() {
     }
 
 }
+void drawBillboard3D(std::string text, float x, float y, float z) {
+    glPushMatrix();
 
+    // Position
+    glTranslatef(x, y, z);
+
+    // Slight backward tilt (realistic)
+    glRotatef(-5, 1, 0, 0);
+
+    float width  = 5.0;
+    float height = 2.5;
+
+    // =====================
+    // FRAME (metallic look)
+    // =====================
+    glDisable(GL_DEPTH_TEST);
+
+    float thickness = 0.2;
+
+    glColor3f(0.75, 0.75, 0.78);
+    glBegin(GL_QUADS);
+    glVertex3f(-width, -thickness, -height);
+    glVertex3f(width, -thickness, -height);
+    glVertex3f(width, thickness, height);
+    glVertex3f(-width, thickness, height);
+    glEnd();
+
+    // =====================
+    // SCREEN
+    // =====================
+    glColor3f(0.02, 0.02, 0.02);
+
+    glBegin(GL_QUADS);
+    glVertex3f(-width * 0.92, 0.01, -height * 0.75);
+    glVertex3f(width * 0.92, 0.01, -height * 0.75);
+    glVertex3f(width * 0.92, 0.01, height * 0.75);
+    glVertex3f(-width * 0.92, 0.01, height * 0.75);
+    glEnd();
+
+    glEnable(GL_DEPTH_TEST);
+
+    // =====================
+    // SUPPORT LEGS
+    // =====================
+    //glEnable(GL_LIGHTING);
+    glColor3f(0.7, 0.7, 0.72);
+
+    GLUquadric* quad = gluNewQuadric();
+
+    // Left leg
+    glPushMatrix();
+    glTranslatef(-width * 0.6, 0, -height);
+    glRotatef(180, 1, 0, 0);
+    gluCylinder(quad, 0.3, 0.3, 3.0, 20, 20);
+
+    // base plate
+    glTranslatef(0, 0, 3.0);
+    gluDisk(quad, 0.0, 0.3, 20, 1);
+    glPopMatrix();
+
+    // Right leg
+    glPushMatrix();
+    glTranslatef(width * 0.6, 0, -height);
+    glRotatef(180, 1, 0, 0);
+    gluCylinder(quad, 0.3, 0.3, 3.0, 20, 20);
+
+    // base plate
+    glTranslatef(0, 0, 3.0);
+    gluDisk(quad, 0.0, 0.3, 20, 1);
+    glPopMatrix();
+
+    gluDeleteQuadric(quad);
+
+    // =====================
+    // TEXT (centered)
+    // =====================
+    glDisable(GL_LIGHTING);
+
+    float lineSpacing = height * 0.6;
+    float centerOffset = lineSpacing / 2.0;
+
+    // GOALS LABEL
+    glPushMatrix();
+    currentTextColor = {0.1, 0.8, 0.2, 1.0};
+    glTranslatef(-width * 0.7, 0.03, centerOffset);
+    glScalef(0.8, 0.8, 0.8);
+    writeText("GOALS", font, LEFT);
+    glPopMatrix();
+
+    // GOALS VALUE
+    glPushMatrix();
+    currentTextColor = {0.2, 0.9, 0.3, 1.0};
+    glTranslatef(width * 0.6, 0.03, centerOffset);
+    glScalef(0.8, 0.8, 0.8);
+    writeText(std::to_string(Goals), font, RIGHT);
+    glPopMatrix();
+
+    // TRIES LABEL
+    glPushMatrix();
+    currentTextColor = {0.2, 0.5, 1.0, 1.0};
+    glTranslatef(-width * 0.7, 0.03, -centerOffset);
+    glScalef(0.8, 0.8, 0.8);
+    writeText("TRIES", font, LEFT);
+    glPopMatrix();
+
+    // TRIES VALUE
+    glPushMatrix();
+    currentTextColor = {0.3, 0.6, 1.0, 1.0};
+    glTranslatef(width * 0.6, 0.03, -centerOffset);
+    glScalef(0.8, 0.8, 0.8);
+    writeText(std::to_string(Tries), font, RIGHT);
+    glPopMatrix();
+
+    glEnable(GL_LIGHTING);
+
+    glPopMatrix();
+}
 
 void cameraPosition(axes point, double distance, double zAngle, double xAngle) {
     gluLookAt(point.x + distance * (cos(DEG2GRAD(zAngle)) * cos(DEG2GRAD(xAngle))),
@@ -374,7 +469,6 @@ Press Q at any time to exit the game.
             glPopMatrix();
         }
 
-// Making sure we can render 3d again
 
         glEnable(GL_LIGHTING);
         glMatrixMode(GL_PROJECTION);
@@ -542,7 +636,7 @@ GLuint convertAndLoadTexture(const char *filename) {
     return loadTextureFile(dest.c_str());
 }
 
-  GLuint groundTexture, defenderTexture, leftArm, rightArm, font; // add ads here later 7th
+  GLuint groundTexture, defenderTexture, leftArm, rightArm, font,crowdTexture, sideTexture, ads; 
 
 void start2DTexture(GLuint texture, bool lightingDisabled) {
 
@@ -553,8 +647,10 @@ void start2DTexture(GLuint texture, bool lightingDisabled) {
     glPushMatrix();
     glEnable(GL_TEXTURE_2D);
     glBindTexture(GL_TEXTURE_2D, texture);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
-glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+    //decomm  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+///decomm glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     glTexEnvf(GL_TEXTURE_2D, GL_TEXTURE_ENV_MODE, GL_MODULATE);
     glEnable(GL_BLEND);
 //    glEnable(GL_TEXTURE_GEN_S); //enable texture coordinate generation
@@ -565,18 +661,70 @@ glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
 
 void end2DTexture(bool lightingDisabled) {
 
-//    glDisable(GL_BLEND);
     if (lightingDisabled)
         glEnable(GL_LIGHTING);
 
-//    glDisable(GL_TEXTURE_GEN_S); //disable texture coordinate generation
-//    glDisable(GL_TEXTURE_GEN_T);
     glDisable(GL_TEXTURE_2D);
     glPopMatrix();
     glPopAttrib();
     glDepthMask(GL_TRUE);
 }
 
+void drawAudience() {
+    float width = 25.0;
+    float height = 12.0;
+    float depth = 25.0;
+    glEnable(GL_POLYGON_OFFSET_FILL);
+    glPolygonOffset(1.0, 1.0);
+
+    // ================= BACK WALL =================
+    start2DTexture(crowdTexture, true);
+
+    glPushMatrix();
+    glTranslatef(0, GOAL_POST_Y + depth, -BALL_RADIUS);
+    glBegin(GL_QUADS);
+    glTexCoord2f(0, 1); glVertex3f(-width, 0, 0);
+    glTexCoord2f(1, 1); glVertex3f(width, 0, 0);
+    glTexCoord2f(1, 0); glVertex3f(width, 0, height);
+    glTexCoord2f(0, 0); glVertex3f(-width, 0, height);
+    glEnd();
+
+    glPopMatrix();
+    end2DTexture(true);
+
+
+    // ================= LEFT WALL =================
+    start2DTexture(sideTexture, true);
+
+    glPushMatrix();
+    glTranslatef(-width, GOAL_POST_Y + depth/2, -BALL_RADIUS);
+    glRotatef(90, 0, 0, 1);
+    glBegin(GL_QUADS);
+    glTexCoord2f(0, 1); glVertex3f(-depth/2, 0, 0);
+    glTexCoord2f(1, 1); glVertex3f(depth/2, 0, 0);
+    glTexCoord2f(1, 0); glVertex3f(depth/2, 0, height);
+    glTexCoord2f(0, 0); glVertex3f(-depth/2, 0, height);
+    glEnd();
+
+    glPopMatrix();
+
+    // ================= RIGHT WALL (FLIPPED) =================
+    glPushMatrix();
+    glTranslatef(width, GOAL_POST_Y + depth/2, -BALL_RADIUS);
+    glRotatef(-90, 0, 0, 1);
+    glBegin(GL_QUADS);
+   
+    glTexCoord2f(1, 1); glVertex3f(-depth/2, 0, 0);
+    glTexCoord2f(0, 1); glVertex3f(depth/2, 0, 0);
+    glTexCoord2f(0, 0); glVertex3f(depth/2, 0, height);
+    glTexCoord2f(1, 0); glVertex3f(-depth/2, 0, height);
+    glEnd();
+
+    glPopMatrix();
+
+    end2DTexture(true);
+    glDisable(GL_POLYGON_OFFSET_FILL);
+}
 float writeMultiLineText(string text, int texture, alignment align) {
     std::stringstream iss(text);
 

@@ -25,23 +25,35 @@ glVertex3f(corners[3].x, corners[3].y, corners[3].z);
 
     end2DTexture();
 
-  
-     //start2DTexture(ads);
-    for (int i = 0; i < 4; ++i) {
+    
+     start2DTexture(ads);
 
-        glBegin(GL_QUADS);
-        glColor4f(0,0,0.5,0.12);
-        glTexCoord2f(0.0, 1);
-        glVertex3f(corners[i].x, corners[i].y, corners[i].z);
-        glTexCoord2f(1*10, 1);
-        glVertex3f(corners[(i + 1) % 4].x, corners[(i + 1) % 4].y, corners[(i + 1) % 4].z);
-        glTexCoord2f(1*10, 0);
-        glVertex3f(corners[(i + 1) % 4].x, corners[(i + 1) % 4].y, corners[(i + 1) % 4].z + AD_HEIGHT);
-        glTexCoord2f(0.0, 0.0);
-        glVertex3f(corners[i].x, corners[i].y, corners[(i + 1) % 4].z + AD_HEIGHT);
-        glEnd();
-    }
-    end2DTexture();
+
+glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+glColor4f(1,1,1,1);  
+
+for (int i = 0; i < 4; ++i) {
+
+    glBegin(GL_QUADS);
+
+    glTexCoord2f(0.0, 1);
+    glVertex3f(corners[i].x, corners[i].y, corners[i].z);
+
+    glTexCoord2f(10.0, 1);
+    glVertex3f(corners[(i + 1) % 4].x, corners[(i + 1) % 4].y, corners[(i + 1) % 4].z);
+
+    glTexCoord2f(10.0, 0);
+    glVertex3f(corners[(i + 1) % 4].x, corners[(i + 1) % 4].y, corners[(i + 1) % 4].z + AD_HEIGHT);
+
+    glTexCoord2f(0.0, 0.0);
+    glVertex3f(corners[i].x, corners[i].y, corners[i].z + AD_HEIGHT);
+
+    glEnd();
+}
+
+end2DTexture();
 
 }
 
