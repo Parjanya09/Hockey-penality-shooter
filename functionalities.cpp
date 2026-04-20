@@ -669,11 +669,13 @@ void end2DTexture(bool lightingDisabled) {
     glPopAttrib();
     glDepthMask(GL_TRUE);
 }
-
+ 
 void drawAudience() {
     float width = 25.0;
     float height = 12.0;
-    float depth = 25.0;
+    float depth = 13.0;
+    float eps = 1.8;   // small overlap fix to align border ads and both left and right walls
+    
     glEnable(GL_POLYGON_OFFSET_FILL);
     glPolygonOffset(1.0, 1.0);
 
@@ -694,37 +696,40 @@ void drawAudience() {
 
 
     // ================= LEFT WALL =================
+    glPushMatrix();
     start2DTexture(sideTexture, true);
 
-    glPushMatrix();
-    glTranslatef(-width, GOAL_POST_Y + depth/2, -BALL_RADIUS);
-    glRotatef(90, 0, 0, 1);
     glBegin(GL_QUADS);
-    glTexCoord2f(0, 1); glVertex3f(-depth/2, 0, 0);
-    glTexCoord2f(1, 1); glVertex3f(depth/2, 0, 0);
-    glTexCoord2f(1, 0); glVertex3f(depth/2, 0, height);
-    glTexCoord2f(0, 0); glVertex3f(-depth/2, 0, height);
+
+   glTexCoord2f(0,1); glVertex3f(width - eps, GOAL_POST_Y + depth + eps, -BALL_RADIUS);
+    glTexCoord2f(1,1); glVertex3f(width - eps, GOAL_POST_Y - depth - eps, -BALL_RADIUS);
+    glTexCoord2f(1,0); glVertex3f(width - eps, GOAL_POST_Y - depth - eps, height - BALL_RADIUS);
+    glTexCoord2f(0,0); glVertex3f(width - eps, GOAL_POST_Y + depth + eps, height - BALL_RADIUS);
+
     glEnd();
-
-    glPopMatrix();
-
-    // ================= RIGHT WALL (FLIPPED) =================
-    glPushMatrix();
-    glTranslatef(width, GOAL_POST_Y + depth/2, -BALL_RADIUS);
-    glRotatef(-90, 0, 0, 1);
-    glBegin(GL_QUADS);
-   
-    glTexCoord2f(1, 1); glVertex3f(-depth/2, 0, 0);
-    glTexCoord2f(0, 1); glVertex3f(depth/2, 0, 0);
-    glTexCoord2f(0, 0); glVertex3f(depth/2, 0, height);
-    glTexCoord2f(1, 0); glVertex3f(-depth/2, 0, height);
-    glEnd();
-
-    glPopMatrix();
 
     end2DTexture(true);
+    glPopMatrix();
+
+
+    // ================= RIGHT WALL =================
+    glPushMatrix();
+    start2DTexture(sideTexture, true);
+
+    glBegin(GL_QUADS);
+
+     glTexCoord2f(0,1); glVertex3f(-width + eps, GOAL_POST_Y + depth + eps, -BALL_RADIUS);
+    glTexCoord2f(1,1); glVertex3f(-width + eps, GOAL_POST_Y - depth - eps, -BALL_RADIUS);
+    glTexCoord2f(1,0); glVertex3f(-width + eps, GOAL_POST_Y - depth - eps, height - BALL_RADIUS);
+    glTexCoord2f(0,0); glVertex3f(-width + eps, GOAL_POST_Y + depth + eps, height - BALL_RADIUS);
+    glEnd();
+
+    end2DTexture(true);
+    glPopMatrix();
+
     glDisable(GL_POLYGON_OFFSET_FILL);
 }
+
 float writeMultiLineText(string text, int texture, alignment align) {
     std::stringstream iss(text);
 
