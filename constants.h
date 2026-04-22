@@ -1,15 +1,13 @@
-//
-// Created by kunal on 3/3/18.
-//
 
-#ifndef FOOTBALL_PENALTY_SHOOTER_CONSTANTS_H
-#define FOOTBALL_PENALTY_SHOOTER_CONSTANTS_H
+
+#ifndef HOCKEY_PENALTY_SHOOTER_CONSTANTS_H
+#define HOCKEY_PENALTY_SHOOTER_CONSTANTS_H
 
 
 #define WIDTH 1920
 #define HEIGHT 1080
 
-#define WINDOW_NAME "Football Penalty Shooter"
+#define WINDOW_NAME "Hockey Penalty Shooter"
 
 #define BALL_RADIUS 0.3
 #define POLE_RADIUS 0.20 //0.15
@@ -48,4 +46,4 @@
 const double PI = 3.141592653589793238L;
 
 
-#endif //FOOTBALL_PENALTY_SHOOTER_CONSTANTS_H
+#endif //HOCKEY_PENALTY_SHOOTER_CONSTANTS_H
