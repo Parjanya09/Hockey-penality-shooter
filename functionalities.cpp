@@ -1,3 +1,8 @@
+/* The above code is a C++ program that includes headers for functionalities and shapes, as well as the
+standard library header <bits/stdc++.h>. It defines several global variables such as currentMode,
+currentlyWaiting, downKeys, scoredGoal, goalCount, totalTries, mouseX, mouseY, firstTime, sphere,
+and determineSphere. The program initializes some of these variables and sets the currentMode to
+ADJUSTING. */
 #include "functionalities.h"
 #include "shapes.h"
 #include <bits/stdc++.h>
@@ -14,6 +19,15 @@ int mouseX, mouseY;
 bool firstTime = true;
 PhysicalState sphere, *determineSphere = NULL;
 
+/**
+ * The function `handleResize` adjusts the viewport and camera perspective based on the window
+ * dimensions.
+ * 
+ * @param w The parameter `w` represents the width of the viewport or the window in pixels.
+ * @param h The parameter `h` in the `handleResize` function represents the height of the viewport or
+ * the window in which the OpenGL rendering is being displayed. It is used to set the height of the
+ * viewport and calculate the camera perspective based on the aspect ratio of the window.
+ */
 void handleResize(int w, int h) {
     glViewport(0, 0, w, h);
 
@@ -25,6 +39,15 @@ void handleResize(int w, int h) {
     glMatrixMode(GL_MODELVIEW);
 }
 
+/**
+ * The function overloads the subscript operator to access the x, y, or z coordinate of a 3D point.
+ * 
+ * @return A reference to a double value is being returned based on the index provided. The specific
+ * double value returned depends on the index: 
+ * - If index is 0, the x value is returned.
+ * - If index is 1, the y value is returned.
+ * - If index is 2, the z value is returned.
+ */
 double &axes::operator[](int index) {
     switch (index) {
         case 0:
@@ -39,6 +62,22 @@ double &axes::operator[](int index) {
     }
 }
 
+/**
+ * The function calculates the Euclidean distance between two points represented by their coordinates
+ * in 3D space.
+ * 
+ * @param axes1 The `axes1` and `axes2` parameters in the `distanceBW` function represent two arrays of
+ * double values, each containing three elements. The function calculates the Euclidean distance
+ * between two points represented by these arrays in a three-dimensional space.
+ * @param axes2 The `axes` type seems to represent a collection of values along different axes. In the
+ * `distanceBW` function, `axes1` and `axes2` are two instances of this type, each containing values
+ * along three axes. The function calculates the Euclidean distance between these two sets of axes
+ * 
+ * @return The function `distanceBW` calculates the Euclidean distance between two points represented
+ * by the `axes` structures `axes1` and `axes2`. It iterates over the three dimensions, calculates the
+ * squared difference between the corresponding coordinates, sums up these squared differences, and
+ * returns the square root of the sum as the final Euclidean distance.
+ */
 double distanceBW(axes axes1, axes axes2) {
     double sum = 0.0;
     double sqr;
@@ -51,12 +90,22 @@ double distanceBW(axes axes1, axes axes2) {
 }
 
 
+/**
+ * The `PhysicalState` constructor initializes the position, velocity, acceleration, time, and
+ * elasticity properties to default values.
+ */
 PhysicalState::PhysicalState() {
     positionInitial = positionCurrent = velocityInitial = velocityCurrent = accelerationCurrent = {0.0, 0.0, 0.0};
     timePassed = 0;
     elasticity = 1.0;
 }
 
+/**
+ * The function overloads the << operator to output the current position, velocity, and time passed of
+ * a PhysicalState object.
+ * 
+ * @return The overloaded << operator function is returning a reference to an ostream object.
+ */
 ostream &operator<<(ostream &out, PhysicalState &p) {
     out << "Current Position : " << endl;
     for (int i = 0; i < 3; ++i) {
@@ -74,6 +123,16 @@ ostream &operator<<(ostream &out, PhysicalState &p) {
 }
 
 
+/**
+ * The function `isItGoal` checks if a ball is within the goal area based on its current position.
+ * 
+ * @param ball The `isItGoal` function takes a `PhysicalState` object named `ball` as a parameter. The
+ * `PhysicalState` object likely contains information about the current position of a ball in a
+ * physical environment, such as its x, y, and z coordinates.
+ * 
+ * @return a boolean value, either true or false, based on the conditions specified in the if
+ * statement.
+ */
 bool isItGoal(PhysicalState ball) {
     if ((ball.positionCurrent.x <= -POLE_RADIUS + POLE_LENGTH / 2) &&
         (ball.positionCurrent.x >= +POLE_RADIUS - POLE_LENGTH / 2) &&
@@ -84,6 +143,15 @@ bool isItGoal(PhysicalState ball) {
 
 }
 
+/**
+ * The function `backgroundMusicPlayer` plays background music in a C++ program using the `paplay`
+ * command with a specified volume and sets a timer to repeat the function every 5 seconds.
+ * 
+ * @param _ The parameter `_` in the `backgroundMusicPlayer` function is an integer variable that is
+ * not being used in the function body. It is a placeholder variable that is typically used when a
+ * function requires a parameter but the parameter is not needed for the function logic. In this case,
+ * the function is using
+ */
 void backgroundMusicPlayer(int _) {
 
 //    if (currentMode != GOAL_ANIMATION)
@@ -92,6 +160,10 @@ void backgroundMusicPlayer(int _) {
 }
 
 
+/**
+ * The function `initialiseEverything` initializes various game elements such as ground, poles, aim
+ * arrow, defender, camera, sphere, power meter, and current mode with specific values and settings.
+ */
 void initialiseEverything() {
     ground.Type = WALL;
     axes temp;
@@ -170,11 +242,22 @@ void initialiseEverything() {
     system("paplay resources/whistle.wav &");
 }
 
+/**
+ * The function `initialiseEverythingCallback` sets a flag to stop everything and then initializes
+ * everything.
+ * 
+ * @param _ The parameter `_` in the `initialiseEverythingCallback` function is of type `int`. It is
+ * not being used within the function, as indicated by the underscore character being used as the
+ * variable name.
+ */
 void initialiseEverythingCallback(int _) {
     stopEverything = true;
     initialiseEverything();
 }
 
+/**
+ * The function `drawGoalPost` is used to draw a goal post with three poles at specified positions.
+ */
 void drawGoalPost() {
 
     {
@@ -196,6 +279,22 @@ void drawGoalPost() {
     }
 
 }
+/**
+ * The function `drawBillboard3D` in C++ draws a 3D billboard with a metallic frame, screen, support
+ * legs, and text labels for goals and tries.
+ * 
+ * @param text The `text` parameter in the `drawBillboard3D` function is a string that represents the
+ * content or message that will be displayed on the billboard in the 3D scene.
+ * @param x The `x` parameter in the `drawBillboard3D` function represents the x-coordinate of the
+ * position where the 3D billboard will be drawn in the scene. It determines the horizontal position of
+ * the billboard within the 3D space.
+ * @param y The `y` parameter in the `drawBillboard3D` function represents the vertical position of the
+ * billboard in the 3D space. It determines how high or low the billboard will be placed relative to
+ * the ground or other objects in the scene. Adjusting the `y` value will move
+ * @param z The `z` parameter in the `drawBillboard3D` function represents the position of the
+ * billboard along the z-axis in a 3D space. This parameter determines how far forward or backward the
+ * billboard will be placed relative to the viewer's perspective. Adjusting the `z` value allows
+ */
 void drawBillboard3D(std::string text, float x, float y, float z) {
     glPushMatrix();
 
@@ -314,6 +413,22 @@ void drawBillboard3D(std::string text, float x, float y, float z) {
     glPopMatrix();
 }
 
+/**
+ * The function `cameraPosition` sets the camera position based on a specified point, distance, and
+ * angles.
+ * 
+ * @param point The `point` parameter represents the coordinates of the point you want the camera to
+ * look at. It consists of `x`, `y`, and `z` coordinates in 3D space.
+ * @param distance The `distance` parameter in the `cameraPosition` function represents the distance
+ * from the `point` in 3D space where the camera will be positioned. This distance determines how far
+ * the camera will be from the point of interest.
+ * @param zAngle The `zAngle` parameter represents the angle in degrees for the rotation around the
+ * z-axis. It is used to calculate the new camera position based on the distance from the point along
+ * with the x and z angles.
+ * @param xAngle The `xAngle` parameter represents the angle in degrees for the rotation around the
+ * x-axis. It is used in the `cameraPosition` function to calculate the new camera position based on
+ * the distance and angles provided.
+ */
 void cameraPosition(axes point, double distance, double zAngle, double xAngle) {
     gluLookAt(point.x + distance * (cos(DEG2GRAD(zAngle)) * cos(DEG2GRAD(xAngle))),
               point.y + distance * (cos(DEG2GRAD(zAngle)) * sin(DEG2GRAD(xAngle))),
@@ -321,6 +436,10 @@ void cameraPosition(axes point, double distance, double zAngle, double xAngle) {
 
 }
 
+/**
+ * The `camera` constructor initializes the `zAngle`, `xAngle`, and `distance` variables for a camera
+ * object.
+ */
 camera::camera() {
     zAngle = xAngle = 0.0;
     distance = 5.0;
@@ -329,6 +448,13 @@ camera::camera() {
 camera sphereCamera;
 
 
+/**
+ * The function `rainBox` draws a colored box with specified transparency using OpenGL in C++.
+ * 
+ * @param alpha The `alpha` parameter in the `rainBox` function is a value that controls the
+ * transparency of the colors used to draw the box. It ranges from 0.0 (completely transparent) to 1.0
+ * (completely opaque). By default, the `alpha` value is set
+ */
 void rainBox(double alpha = 0.7) {
 
     glBegin(GL_QUADS);
@@ -350,6 +476,9 @@ void rainBox(double alpha = 0.7) {
     glEnd();
 }
 
+/**
+ * The function myShear applies a shear transformation using a specified matrix in C++.
+ */
 void myShear() {
 //    glRotatef(-45, 0.0, 0.0, 1.0);
     float m[] = {
@@ -363,6 +492,9 @@ void myShear() {
 
 double powerMeter = 0.0;
 
+/**
+ * The function `drawPowerMeter` in C++ uses OpenGL to draw a power meter with a variable power level.
+ */
 void drawPowerMeter() {
 
 
@@ -392,6 +524,10 @@ void drawPowerMeter() {
 }
 
 
+/**
+ * The `drawHUD` function in C++ is responsible for rendering the Heads-Up Display (HUD) elements,
+ * including instructions for gameplay and power meter display.
+ */
 void drawHUD() {
     glDisable(GL_LIGHTING);
     if (currentMode == HELP) {
@@ -479,6 +615,14 @@ Press Q at any time to exit the game.
     }
     glEnable(GL_LIGHTING);
 }
+/**
+ * The function `updateDefenderPosition` updates the position and velocity of a defender in a game
+ * based on certain conditions and modes.
+ * 
+ * @param _ The parameter `_` in the `updateDefenderPosition` function is of type `int`. It is not
+ * being used within the function, so it seems to be a placeholder variable that is not currently
+ * serving any purpose in the code snippet provided.
+ */
 void updateDefenderPosition(int _) {
 
     static float increment = 2.0f;
@@ -524,6 +668,18 @@ void updateDefenderPosition(int _) {
 }
 
 
+/**
+ * The function `convertToTexture` reads color data from a text file, converts it to a texture format,
+ * and writes it to a binary file with a `.tx` extension.
+ * 
+ * @param filename The `convertToTexture` function takes a `const char*` parameter `filename`, which is
+ * the name of the file to be read and converted to a texture file. The function reads the input file,
+ * processes the data, and writes the texture data to a new file with a ".tx"
+ * 
+ * @return The function `convertToTexture` returns an integer value. If the file specified by the
+ * `filename` parameter cannot be opened, the function returns -1. Otherwise, it returns 0 after
+ * processing the file and writing the texture data to a new file with a ".tx" extension.
+ */
 int convertToTexture(const char *filename) {
     ifstream textFile(filename);
     string destination(filename);
@@ -552,6 +708,17 @@ int convertToTexture(const char *filename) {
     return 0;
 }
 
+/**
+ * The function `loadTextureFile` loads a texture from a file and creates an OpenGL texture object.
+ * 
+ * @param filename The `filename` parameter in the `loadTextureFile` function is a pointer to a
+ * constant character array that represents the path to the texture file that you want to load as a
+ * texture in your OpenGL application. This function reads the texture data from the specified file and
+ * creates an OpenGL texture object from it
+ * 
+ * @return The function `loadTextureFile` returns a `GLuint` which represents the texture that has been
+ * loaded from the file specified by the `filename` parameter.
+ */
 GLuint loadTextureFile(const char *filename) {
 
     GLuint texture;
@@ -583,6 +750,17 @@ GLuint loadTextureFile(const char *filename) {
 
 const float chalkwidth = POLE_RADIUS;
 
+/**
+ * The function `chalkHRectangle` draws a horizontal rectangle using OpenGL with specified start and
+ * end points.
+ * 
+ * @param start It seems like the description of the `start` parameter is missing in your message.
+ * Could you please provide more information about the `start` parameter so that I can assist you
+ * further with the `chalkHRectangle` function?
+ * @param end The `end` parameter in the `chalkHRectangle` function represents the end point of the
+ * horizontal rectangle to be drawn. It is of type `axes`, which likely contains the x and y
+ * coordinates of the end point on the screen or in the coordinate system being used.
+ */
 void chalkHRectangle(axes start, axes end) {
     glBegin(GL_QUADS);
     glVertex3f(start.x, start.y - chalkwidth / 2.0, 0);
@@ -592,6 +770,14 @@ void chalkHRectangle(axes start, axes end) {
     glEnd();
 }
 
+/**
+ * The function `chalkVRectangle` draws a rectangle using OpenGL with specified start and end points.
+ * 
+ * @param start The `start` parameter represents the starting point of the rectangle where you want to
+ * draw the chalk line. It contains the x and y coordinates of the starting point.
+ * @param end The `end` parameter represents the end point of the rectangle you want to draw. It is a
+ * structure or class that contains the x and y coordinates of the endpoint.
+ */
 void chalkVRectangle(axes start, axes end) {
     glBegin(GL_QUADS);
     glVertex3f(start.x - chalkwidth / 2.0, start.y, 0);
@@ -601,6 +787,10 @@ void chalkVRectangle(axes start, axes end) {
     glEnd();
 }
 
+/**
+ * The function `drawChalkLines` in C++ uses OpenGL to draw chalk lines on a 3D scene with specified
+ * dimensions and positions.
+ */
 void drawChalkLines() {
     glPushAttrib(GL_LINE_WIDTH);
     glPushAttrib(GL_CURRENT_BIT);
@@ -629,6 +819,15 @@ void drawChalkLines() {
     glPopAttrib();
 }
 
+/**
+ * The function converts an image file to a texture format and then loads the texture file.
+ * 
+ * @param filename The `filename` parameter is a C-style string that represents the path to the image
+ * file that you want to convert and load as a texture.
+ * 
+ * @return The function `convertAndLoadTexture` returns a `GLuint` value, which is the result of
+ * loading a texture file after converting the input filename to a texture format.
+ */
 GLuint convertAndLoadTexture(const char *filename) {
     convertToTexture(filename);
     string dest(filename);
@@ -638,6 +837,17 @@ GLuint convertAndLoadTexture(const char *filename) {
 
   GLuint groundTexture, defenderTexture, leftArm, rightArm, font,crowdTexture, sideTexture, ads; 
 
+/**
+ * The function `start2DTexture` sets up a 2D texture with specific parameters and options for
+ * rendering in OpenGL, including handling lighting and transparency.
+ * 
+ * @param texture The `texture` parameter in the `start2DTexture` function is of type `GLuint` and
+ * represents the ID of the 2D texture that you want to work with in OpenGL. This ID is typically
+ * generated using `glGenTextures` and then bound to a texture using `glBind
+ * @param lightingDisabled The `lightingDisabled` parameter is a boolean flag that indicates whether
+ * lighting should be disabled when rendering the 2D texture. If `lightingDisabled` is set to `true`,
+ * then lighting will be disabled; otherwise, lighting will remain enabled.
+ */
 void start2DTexture(GLuint texture, bool lightingDisabled) {
 
     glPushAttrib(GL_CURRENT_BIT);
@@ -659,6 +869,14 @@ void start2DTexture(GLuint texture, bool lightingDisabled) {
     glColor4f(1.0, 1.0, 1.0, 1.0);//Replace this alpha for transparency
 }
 
+/**
+ * The function `end2DTexture` disables 2D texturing and performs necessary OpenGL state changes,
+ * optionally enabling lighting if disabled.
+ * 
+ * @param lightingDisabled The parameter `lightingDisabled` is a boolean variable that indicates
+ * whether lighting is disabled or not. If `lightingDisabled` is true, then lighting will be enabled
+ * using `glEnable(GL_LIGHTING)`.
+ */
 void end2DTexture(bool lightingDisabled) {
 
     if (lightingDisabled)
@@ -670,6 +888,10 @@ void end2DTexture(bool lightingDisabled) {
     glDepthMask(GL_TRUE);
 }
  
+/**
+ * The function `drawAudience` in C++ uses OpenGL to draw a 3D audience area with back, left, and right
+ * walls, applying textures and offsets for visual effects.
+ */
 void drawAudience() {
     float width = 25.0;
     float height = 12.0;
@@ -730,6 +952,22 @@ void drawAudience() {
     glDisable(GL_POLYGON_OFFSET_FILL);
 }
 
+/**
+ * The function `writeMultiLineText` reads a multi-line text input, splits it into individual lines,
+ * and writes each line with a specified alignment and texture.
+ * 
+ * @param text The `text` parameter is a string that contains multiple lines of text separated by
+ * newline characters.
+ * @param texture The `texture` parameter in the `writeMultiLineText` function is an integer that
+ * represents the texture to be used for rendering the text. This texture could be an image or a
+ * texture object that contains the characters or symbols needed for displaying the text.
+ * @param align The `align` parameter in the `writeMultiLineText` function is used to specify the
+ * alignment of the text within the rendering area. It is of type `alignment`, which is likely an enum
+ * or a custom data type that defines different alignment options such as left, center, or right
+ * alignment for
+ * 
+ * @return The function `writeMultiLineText` is returning a floating-point value of 0.0f.
+ */
 float writeMultiLineText(string text, int texture, alignment align) {
     std::stringstream iss(text);
 
@@ -742,6 +980,20 @@ float writeMultiLineText(string text, int texture, alignment align) {
     return 0.0f;
 }
 
+/**
+ * The function `writeText` in C++ renders text on a 2D texture with specified alignment.
+ * 
+ * @param text The `text` parameter in the `writeText` function is a string that represents the text
+ * you want to render on the specified texture.
+ * @param texture The `texture` parameter in the `writeText` function is used to specify the texture ID
+ * of the 2D texture that will be used for rendering the text. This texture is bound before rendering
+ * the text and then unbound after rendering is complete.
+ * @param align The `align` parameter in the `writeText` function specifies the alignment of the text
+ * being rendered. It can have one of the following values:
+ * 
+ * @return The function `writeText` is returning a float value, which is calculated as `(2 * w / 128.0)
+ * / h`.
+ */
 float writeText(string text, int texture, alignment align) {
     start2DTexture(texture);
     glColor4fv(&currentTextColor[0]);
@@ -790,6 +1042,14 @@ float writeText(string text, int texture, alignment align) {
 
 int textRotX;
 
+/**
+ * The function `rotateMsg` rotates a message by 3 degrees in the X-axis until it completes a full
+ * rotation of 360 degrees.
+ * 
+ * @param _ The parameter `_` in the `rotateMsg` function is an integer variable that is not being used
+ * within the function. It is simply there as a placeholder for an integer argument, but it is not
+ * utilized in the function logic.
+ */
 void rotateMsg(int _) {
     textRotX = (textRotX + 3) % 360;
 
@@ -799,6 +1059,9 @@ void rotateMsg(int _) {
 }
 
 
+/**
+ * The function `showMsg` in C++ displays a message in a 3D environment based on certain conditions.
+ */
 void showMsg() {
     glPushMatrix();
 

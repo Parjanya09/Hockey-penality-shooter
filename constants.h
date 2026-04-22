@@ -1,12 +1,16 @@
 
 
+
+//The `#ifndef HOCKEY_PENALTY_SHOOTER_CONSTANTS_H` and `#define HOCKEY_PENALTY_SHOOTER_CONSTANTS_H` are known as include guards in C and C++ programming.
 #ifndef HOCKEY_PENALTY_SHOOTER_CONSTANTS_H
 #define HOCKEY_PENALTY_SHOOTER_CONSTANTS_H
 
 
+//The `#define WIDTH 1920` and `#define HEIGHT 1080` lines are defining constants in the code. In this case, `WIDTH` is being defined as 1920 and `HEIGHT` is being defined as 1080. These constants can be used throughout the code to represent these specific values, making the code more readable and easier to maintain.
 #define WIDTH 1920
 #define HEIGHT 1080
 
+//The lines you provided are defining constants in the code for a hockey penalty shooter game.
 #define WINDOW_NAME "Hockey Penalty Shooter"
 
 #define BALL_RADIUS 0.3
@@ -46,4 +50,4 @@
 const double PI = 3.141592653589793238L;
 
 
-#endif //HOCKEY_PENALTY_SHOOTER_CONSTANTS_H
+#endif 

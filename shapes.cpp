@@ -4,6 +4,10 @@
 #include "functionalities.h"
 
 
+/**
+ * The `draw` function renders a flat surface with textures and ads in a 3D environment using OpenGL in
+ * C++.
+ */
 void FlatSurface::draw() {
 
     start2DTexture(groundTexture);
@@ -59,6 +63,10 @@ end2DTexture();
 
 FlatSurface ground;
 
+/**
+ * The function `draw()` in C++ uses OpenGL to draw different types of pole surfaces with specified
+ * dimensions and colors.
+ */
 void PoleSurface::draw() {
     glPushAttrib(GL_CURRENT_BIT);
     GLUquadric *quadric = gluNewQuadric();
@@ -157,6 +165,10 @@ PoleSurface::PoleSurface() {
 }
 
 
+/**
+ * The function `drawWithPoints` in C++ calculates the rotation angles and draws a flat arrow using
+ * OpenGL.
+ */
 void FlatArrow::drawWithPoints() {
     axes vector;
     for (int i = 0; i < 3; ++i) {
@@ -197,6 +209,10 @@ void FlatArrow::drawWithPoints() {
 
 }
 
+/**
+ * The function `drawWithAngles` in C++ uses OpenGL to draw a flat arrow with specified angles and
+ * dimensions.
+ */
 void FlatArrow::drawWithAngles() {
 
     axes vector;
@@ -255,6 +271,10 @@ void FlatArrow::drawWithAngles() {
     glPopAttrib();
 }
 
+/**
+ * The function `acceleration` in C++ checks if the defender's position is near the edge of a pole and
+ * reverses the velocity if so.
+ */
 void Defender::acceleration() {
     if (this->state.positionCurrent.x >= POLE_LENGTH / 2.0 - this->width / 2 - POLE_RADIUS ||
         this->state.positionCurrent.x <= -POLE_LENGTH / 2.0 + this->width / 2 + POLE_RADIUS) {
@@ -262,6 +282,10 @@ void Defender::acceleration() {
     }
 }
 
+/**
+ * The `draw()` function in C++ renders a 2D textured defender with left and right arms that can rotate
+ * around the shoulder.
+ */
 void Defender::draw() {
 
     glPushMatrix();
@@ -359,7 +383,7 @@ glTexCoord2f(1, 1); glVertex3f(this->width * 0.40, 0, -this->height * 0.50);
 // top-right
 glTexCoord2f(1, 0); glVertex3f(this->width * 0.40, 0, 0);
 
-// ✅ top-left (pivot)
+//  top-left (pivot)
 glTexCoord2f(0, 0); glVertex3f(0, 0, 0);
 
 glEnd();

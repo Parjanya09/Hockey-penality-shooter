@@ -1,3 +1,8 @@
+/* The above code is a C++ program that includes several header files, defines some boolean variables,
+and initializes some variables. It seems to be related to a game or simulation as it includes
+variables like `poleCollided`, `stopEverything`, `Tries`, and `Goals`. Additionally, it includes
+vectors and functions related to graphics using OpenGL (GL/glut.h). The code also defines a vector
+`currentTextColor` with RGBA values for text color. However, there is a syntax error with the ` */
 #include <GL/glut.h>
 #include <bits/stdc++.h>
 #include "constants.h"
@@ -15,6 +20,18 @@ vector<float> currentTextColor = {1, 1, 1, 1};
 
 void showScore();
 
+/**
+ * The function `updatePos` handles collisions with poles, defenders, and boundary walls, and updates
+ * the position and velocity of a physical object in a simulated environment.
+ * 
+ * @param p The `p` parameter in the `updatePos` function represents the `PhysicalState` object that
+ * contains information about the current state of the physical entity being updated. It includes
+ * attributes such as `positionCurrent` (current position coordinates), `velocityCurrent` (current
+ * velocity components), `timePassed`
+ * @param t The parameter `t` in the `updatePos` function represents the time elapsed since the last
+ * update. It is used to calculate the new position of the physical state `p` based on its current
+ * velocity and any collisions or interactions that may occur during that time interval.
+ */
 void updatePos(PhysicalState &p, double t) {
     p.timePassed += t;
 
@@ -125,6 +142,25 @@ if (fabs(p.velocityCurrent.y) <= 0.01) p.velocityCurrent.y = 0;
 }
 
 
+/**
+ * The function `renderBitmapString` renders a string of characters using a specified font at a given
+ * position in a 3D space.
+ * 
+ * @param x The `x` parameter in the `renderBitmapString` function represents the x-coordinate where
+ * the bitmap string will be rendered on the screen.
+ * @param y The `y` parameter in the `renderBitmapString` function represents the y-coordinate where
+ * the text will be rendered on the screen. It determines the vertical position of the text within the
+ * 3D space.
+ * @param z The 'z' parameter in the function `renderBitmapString` represents the depth or distance of
+ * the text from the viewer in a 3D space. It is used to specify the position of the text along the
+ * z-axis.
+ * @param font The `font` parameter in the `renderBitmapString` function is a pointer to the font style
+ * that you want to use for rendering the text. It is typically one of the predefined fonts available
+ * in the GLUT library, such as `GLUT_BITMAP_8_BY_13`, `GLUT_BITMAP
+ * @param string The `string` parameter in the `renderBitmapString` function is a pointer to a
+ * character array (or string) that contains the text you want to render on the screen. It is the text
+ * that will be displayed using the specified font at the specified position (x, y, z) on
+ */
 void renderBitmapString(
         float x,
         float y,
@@ -139,6 +175,14 @@ void renderBitmapString(
     }
 }
 
+/**
+ * The updatePosCallBack function updates the position of a sphere at a constant frame rate while in
+ * shooting mode.
+ * 
+ * @param _ The parameter "_" in the function "updatePosCallBack" is an integer variable that is not
+ * being used within the function. It is a placeholder variable that is commonly used when a function
+ * requires a parameter but the parameter is not needed for the logic inside the function.
+ */
 void updatePosCallBack(int _) {
     if (currentMode != SHOOTING && currentlyWaiting) {
         currentMode = SHOOTING;
@@ -152,6 +196,10 @@ void updatePosCallBack(int _) {
 }
 
 
+/**
+ * The `draw()` function in C++ sets up the drawing perspective, handles lighting, and renders various
+ * elements such as a cylinder, audience, goal post, and HUD in a 3D scene.
+ */
 void draw() {
     glLoadIdentity(); //Reset the drawing perspective
     cameraPosition(toLookAt, sphereCamera.distance, sphereCamera.zAngle, sphereCamera.xAngle);
@@ -235,6 +283,10 @@ if (determineSphere) {
     glutPostRedisplay();
 }
 
+/**
+ * The function `showScore` in C++ renders a visual display of goals and tries with corresponding
+ * colors and text positions.
+ */
 void showScore() {
     glPushMatrix();
     glTranslatef(0, GOAL_POST_Y, POLE_HEIGHT + BALL_RADIUS);
@@ -299,6 +351,14 @@ void showScore() {
     glPopMatrix();
 }
 
+/**
+ * The function `incrementPowerMeter` updates the `powerMeter` value based on certain conditions and
+ * schedules itself to be called again after a specific time interval if certain conditions are met.
+ * 
+ * @param _ The parameter `_` in the `incrementPowerMeter` function is not being used within the
+ * function body. It is simply a placeholder for an integer parameter that is not being utilized in the
+ * function logic.
+ */
 void incrementPowerMeter(int _) {
     static int up = 1;
     if (powerMeter >1.0 || powerMeter < 0.0) {
@@ -310,6 +370,20 @@ void incrementPowerMeter(int _) {
     }
 }
 
+/**
+ * The function `handleKeypress` in C++ handles key presses for different modes and adjusts camera
+ * distance accordingly.
+ * 
+ * @param key The `key` parameter in the `handleKeypress` function represents the key that was pressed
+ * on the keyboard. It is of type `unsigned char`, which means it can hold ASCII values of characters.
+ * When a key is pressed, the corresponding ASCII value is passed to this function as the `key
+ * @param x The parameter `x` in the `handleKeypress` function represents the current x-coordinate of
+ * the mouse cursor when the key press event occurred. It is used to track the position of the mouse
+ * along the horizontal axis at the time of the key press event.
+ * @param y The parameter `y` in the `handleKeypress` function represents the current y-coordinate of
+ * the mouse cursor when the key was pressed. It is used to track the position of the mouse along the
+ * vertical axis.
+ */
 void handleKeypress(unsigned char key, //The key that was pressed
                     int x, int y) {    //The current mouse coordinates
     if (currentMode != HELP) {
@@ -354,6 +428,10 @@ void handleKeypress(unsigned char key, //The key that was pressed
 
 }
 
+/**
+ * The `idle` function in C++ handles various game modes and actions such as powering up the ball,
+ * shooting, and determining goal scores.
+ */
 void idle() {
     if (!currentlyWaiting) {
         if (currentMode == POWERING && !downKeys[' ']) {
@@ -402,10 +480,36 @@ void idle() {
 
 axes toLookAt;
 
+/**
+ * The function `handleUpKeypress` sets the value corresponding to the given key in the `downKeys`
+ * array to false.
+ * 
+ * @param key The `key` parameter represents the ASCII value of the key that was pressed.
+ * @param x The parameter `x` in the `handleUpKeypress` function represents the x-coordinate of the
+ * mouse cursor when the keypress event occurred.
+ * @param y The parameter `y` in the `handleUpKeypress` function represents the y-coordinate of the
+ * mouse pointer when the keypress event occurred.
+ */
 void handleUpKeypress(unsigned char key, int x, int y) {
     downKeys[key] = false;
 }
 
+/**
+ * The function `handleSpecialKeypress` adjusts the angles of an aim arrow based on specific key
+ * presses when in aiming mode.
+ * 
+ * @param key The `key` parameter in the `handleSpecialKeypress` function represents the special key
+ * that was pressed. In this case, it is an integer value that corresponds to a special key on the
+ * keyboard, such as `GLUT_KEY_UP`, `GLUT_KEY_DOWN`, `GLUT_KEY_LEFT
+ * @param x The `x` parameter in the `handleSpecialKeypress` function represents the x-coordinate of
+ * the mouse cursor when the special key was pressed. It is a parameter that is commonly used in GLUT
+ * (OpenGL Utility Toolkit) functions to provide the current x-coordinate of the mouse cursor within
+ * the window when a
+ * @param y The parameter `y` in the `handleSpecialKeypress` function represents the y-coordinate of
+ * the mouse cursor when the special key press event is triggered. It is used in conjunction with the
+ * `x` parameter to determine the position of the mouse cursor on the screen when a special key is
+ * pressed.
+ */
 void handleSpecialKeypress(int key, int x, int y) {
 
     if (currentMode == AIMING) {
@@ -433,6 +537,15 @@ int sgn(T val) {
     return (T(0) < val) - (val < T(0));
 }
 
+/**
+ * The function `handlePassiveMouse` adjusts the angles of a camera based on mouse movement, but only
+ * if the current mode is not set to `HELP`.
+ * 
+ * @param x The `x` parameter represents the x-coordinate of the mouse cursor on the screen.
+ * @param y The `y` parameter in the `handlePassiveMouse` function represents the vertical position of
+ * the mouse cursor on the screen. It is used to calculate the `sphereCamera.zAngle` based on the
+ * height of the window and the position of the cursor.
+ */
 void handlePassiveMouse(int x, int y) {
 //    if (currentMode == ADJUSTING) {
     if (currentMode != HELP) {
@@ -441,6 +554,10 @@ void handlePassiveMouse(int x, int y) {
     }
 }
 
+/**
+ * The function `myInit` sets up various OpenGL settings and enables features like depth testing,
+ * lighting, and blending.
+ */
 void myInit(void) {
     glClearColor(137 / 255.0, 206 / 255.0, 255 / 255.0, 0);
 //    glOrtho(0, WIDTH, 0, HEIGHT, 0, 500);
@@ -464,6 +581,19 @@ void myInit(void) {
 
 }
 
+/**
+ * The main function initializes various components and sets up a GLUT window for a graphics
+ * application.
+ * 
+ * @param argc The `argc` parameter in the `main` function stands for "argument count" and represents
+ * the number of arguments passed to the program when it is executed from the command line. It includes
+ * the name of the program itself as the first argument.
+ * @param argv The `argv` parameter in the `main` function is an array of strings that represent the
+ * command-line arguments passed to the program when it is executed. Each element in the `argv` array
+ * is a null-terminated C-string, where `argv[0]` typically holds the name of the
+ * 
+ * @return The main function is returning an integer value of 0.
+ */
 int main(int argc, char *argv[]) {
     initialiseEverything();
     currentMode = HELP;

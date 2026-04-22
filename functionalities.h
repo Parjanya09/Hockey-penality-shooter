@@ -1,3 +1,4 @@
+//The `#ifndef HOCKEY_PENALTY_SHOOTER_FUNCTIONALITIES_H` and `#define HOCKEY_PENALTY_SHOOTER_FUNCTIONALITIES_H` at the beginning of the code snippet are known as include guards. They are used to prevent multiple inclusions of the same header file in a translation unit.
 #ifndef HOCKEY_PENALTY_SHOOTER_FUNCTIONALITIES_H
 #define HOCKEY_PENALTY_SHOOTER_FUNCTIONALITIES_H
 
@@ -19,6 +20,7 @@ void drawAudience();
 extern GLuint crowdTexture;
 extern GLuint sideTexture;
 
+//The `struct axes` defines a structure that represents a set of coordinates in 3D space with `x`, `y`, and `z` components.
 struct axes {
     double x, y, z;
 
@@ -123,4 +125,5 @@ void showMsg();
 void rotateMsg(int _);
 
 extern axes toLookAt;
+#endif //HOCKEY_PENALTY_SHOOTER_FUNCTIONALITIES_H
 #endif //HOCKEY_PENALTY_SHOOTER_FUNCTIONALITIES_H
