@@ -96,9 +96,10 @@ hockey.exe
 | ------------- | -------------- |
 | Adjust camera | Mouse movement |
 | Zoom in/out   | `+` / `-`      |
+| Gaming Mode   | Enter          |
 | Aim direction | Arrow keys     |
 | Power control | Spacebar       |
-| Shoot         | Enter          |
+| Shoot         | Release        |
 
 ---
 
